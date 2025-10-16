@@ -1,86 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Gift Hampers Gallery</title>
-  <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-  <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #fff8e1;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #d17b00;
-      margin-bottom: 30px;
-    }
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 12px;
-      width: 220px;
-      text-align: center;
-      transition: transform 0.2s ease;
-    }
-    .card:hover {
-      transform: scale(1.03);
-    }
-    .card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 12px;
-    }
-    .card h3 {
-      margin: 10px 0 5px;
-      color: #444;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <h1>✨ Gift Hamper Collection ✨</h1>
-  <div id="productGrid" class="grid"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="tofaa.png" />
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <div style="text-align: center; margin-bottom: 20px">
+      <img
+        src="tofaa.png"
+        alt="ToFAA Logo"
+        style="width: 120px; height: auto"
+      />
+    </div>
+    <h1>✨ <span style="color: #1a276d">Diwali Hampers</span>✨</h1>
 
-  <script>
-    async function loadProducts() {
-      try {
-        const response = await fetch('products.xlsx');
-        const data = await response.arrayBuffer();
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const products = XLSX.utils.sheet_to_json(firstSheet);
-        displayProducts(products);
-      } catch (err) {
-        document.getElementById('productGrid').innerHTML =
-          '<p style="color:red;text-align:center;">⚠️ Unable to load products.xlsx. Please check file path.</p>';
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #8eb6f1;
+        margin: 0;
+        padding: 20px;
       }
-    }
 
-    function displayProducts(products) {
-      const grid = document.getElementById('productGrid');
-      grid.innerHTML = '';
-      products.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${p.Image}" alt="${p['Product Code']}">
-          <h3>${p['Product Code']}</h3>
-        `;
-        grid.appendChild(card);
-      });
-    }
+      h1 {
+        text-align: center;
+        color: #1a276d;
+        margin-bottom: 30px;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
+      .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 12px;
+        width: 220px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+      }
+      .card:hover {
+        transform: scale(1.03);
+      }
+      .card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+      .card h3 {
+        margin: 10px 0 5px;
+        color: #444;
+        font-size: 16px;
+      }
 
-    loadProducts();
-  </script>
-</body>
+      /* Overlay for zoom */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        cursor: zoom-out;
+      }
+
+      .overlay img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        animation: zoomIn 0.25s ease;
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="productGrid" class="grid"></div>
+
+    <script>
+      async function loadProducts() {
+        try {
+          const response = await fetch("products.xlsx");
+          const data = await response.arrayBuffer();
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const products = XLSX.utils.sheet_to_json(firstSheet);
+          displayProducts(products);
+        } catch (err) {
+          document.getElementById("productGrid").innerHTML =
+            '<p style="color:red;text-align:center;">⚠️ Unable to load products.xlsx. Please check file path.</p>';
+        }
+      }
+
+      function displayProducts(products) {
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = "";
+
+        products.forEach((p) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${p.Image}" alt="${p["Product Code"]}">
+            <h3>${p["Product Name"]}</h3>
+          `;
+
+          // Zoom on click
+          card.addEventListener("click", () =>
+            showZoom(p.Image, p["Product Name"])
+          );
+          grid.appendChild(card);
+        });
+      }
+
+      function showZoom(imageSrc, title) {
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        overlay.innerHTML = `<img src="${imageSrc}" alt="${title}">`;
+
+        overlay.addEventListener("click", () => overlay.remove());
+        document.body.appendChild(overlay);
+      }
+
+      loadProducts();
+    </script>
+    <!-- Contact Footer -->
+    <footer
+      style="
+        background: #1a276d;
+        color: white;
+        text-align: center;
+        padding: 15px 10px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+      "
+    >
+      <p style="margin: 5px 0; font-size: 16px">
+        Contact Us:
+        <a
+          href="https://wa.me/911234567890"
+          target="_blank"
+          style="color: #fff; text-decoration: underline"
+          >WhatsApp</a
+        >
+        |
+        <a
+          href="tel:+911234567890"
+          style="color: #fff; text-decoration: underline"
+          >+91 12345 67890</a
+        >
+      </p>
+      <p style="margin: 0; font-size: 14px">
+        &copy; 2025 तोFaa. All rights reserved.
+      </p>
+    </footer>
+  </body>
 </html>
