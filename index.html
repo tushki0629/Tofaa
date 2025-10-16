@@ -1,3 +1,4 @@
+layout: default
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -27,12 +28,14 @@
         color: #1a276d;
         margin-bottom: 30px;
       }
+
       .grid {
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
         justify-content: center;
       }
+
       .card {
         background: white;
         border-radius: 12px;
@@ -43,15 +46,18 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         cursor: pointer;
       }
+
       .card:hover {
         transform: scale(1.03);
       }
+
       .card img {
         width: 100%;
         height: 180px;
         object-fit: cover;
         border-radius: 12px;
       }
+
       .card h3 {
         margin: 10px 0 5px;
         color: #444;
@@ -83,6 +89,7 @@
           transform: scale(0.8);
           opacity: 0;
         }
+
         to {
           transform: scale(1);
           opacity: 1;
@@ -116,9 +123,9 @@
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
-            <img src="${p.Image}" alt="${p["Product Code"]}">
-            <h3>${p["Product Name"]}</h3>
-          `;
+                <img src="${p.Image}" alt="${p["Product Code"]}">
+                <h3>${p["Product Name"]}</h3>
+              `;
 
           // Zoom on click
           card.addEventListener("click", () =>
